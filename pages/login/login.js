@@ -19,9 +19,13 @@ Page({
           $common.api.request($common.config.GetUserPhone, options)
             .then((res) => {
               console.log(res);
-              wx.redirectTo({
-                url: '/pages/bind/bind'
-              })
+              if(res.data.res) {
+                wx.redirectTo({
+                  url: '/pages/bind/bind'
+                })
+              }else{
+                $common.api.showModal('获取手机号失败，请重试！')
+              }
             })
             .catch((res) => {
               console.log(res);
