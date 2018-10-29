@@ -1,4 +1,4 @@
-const mapKey = require('./qqmap.js');
+const mapKey = require('./qqmap.js')
 module.exports = {
     request(url, data, method = 'POST') { //请求数据
         return new Promise((resolve, reject) => wx.request({ url, data, method, success: resolve, fail: reject }))
@@ -22,7 +22,7 @@ module.exports = {
         })
     },
     locationAndGetAddress() { //获取位置，并且解析地址
-        return new Promise((resolve, reject) => wx.getLocation({ type: 'gcj02', altitudeL: 'true', success: resolve, fail: () => this.showModal('当前定位失败!') }))
+        return new Promise((resolve, reject) => wx.getLocation({ type: 'gcj02', altitudeL: 'true', success: resolve, fail: () => { } }))
             .then((res) => {
                 const latitude = res.latitude,
                     longitude = res.longitude;
@@ -31,14 +31,14 @@ module.exports = {
                         location: { latitude, longitude },
                         success: (res) => res.status === 0 ? resolve(res) : reject(res),
                         fail: reject
-                    });
+                    })
                 })
             })
     },
     timerOut: null,
     debounce(callback = () => { }, timeOut = 300) { //防抖
-        clearTimeout(this.timerOut);
-        this.timerOut = setTimeout(callback, timeOut);
+        clearTimeout(this.timerOut)
+        this.timerOut = setTimeout(callback, timeOut)
     },
     share(title = '定位小程序', path = '/pages/transition/transition', imageUrl = null) { //分享
         return { title, path, imageUrl }
@@ -50,13 +50,13 @@ module.exports = {
         let text;
         switch (+code) {
             case 0:
-                text = '该用户不存在！';
+                text = '该用户不存在！'
                 break;
             case 4:
-                text = '数据错误！';
+                text = '数据错误！'
                 break;
             default:
-                text = '网络不佳，请稍候重试！';
+                text = '网络不佳，请稍候重试！'
                 break;
         }
         return this.showModal(text);
@@ -64,8 +64,8 @@ module.exports = {
     unique(arr, id) { //数组去重
         let hash = {};
         return arr.reduce(function (item, target) {
-            hash[target[id]] ? '' : hash[target[id]] = true && item.push(target);
-            return item;
-        }, []);
+            hash[target[id]] ? '' : hash[target[id]] = true && item.push(target)
+            return item
+        }, [])
     },
 }

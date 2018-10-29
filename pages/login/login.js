@@ -2,14 +2,13 @@ const $common = require('../../common/common.js')
 const app = getApp()
 Page({
   data: {
-    bgImage: 'http://img.zcool.cn/community/01c941586c8c66a8012060c8c789c1.jpg@1280w_1l_2o_100sh.png',
+    bgImage: '',
     clause: true, //条款同意状态
   },
   getPhoneMumber(e) { //获取手机号
     if (!this.data.clause) return $common.api.showModal('请阅读并同意隐私条款!')
-    console.log(e);
     if (e.detail.encryptedData) {
-      $common.getOpenId(true)
+      $common.checkSession()
         .then(() => {
           let options = {
             encryptedData: e.detail.encryptedData,
@@ -18,23 +17,19 @@ Page({
           }
           $common.api.request($common.config.GetUserPhone, options)
             .then((res) => {
-              console.log(res);
-              if(res.data.res) {
+              if (res.data.res) {
+                wx.setStorageSync('phone', res.data.phoneNumber)
                 wx.redirectTo({
                   url: '/pages/bind/bind'
                 })
-              }else{
+              } else {
                 $common.api.showModal('获取手机号失败，请重试！')
               }
             })
             .catch((res) => {
-              console.log(res);
+              $common.api.codeModal()
             })
         })
-        .catch(() => {
-          $common.api.showModal('获取失败，请稍候重试！')
-        })
-
     }
   },
   changeClause() { //条款change
@@ -50,7 +45,11 @@ Page({
   getCollection() { //获取图片等信息
     $common.api.request($common.config.GetCollection, { type: 1 })
       .then((res) => {
-
+        if(res.data.res) {
+          this.setData({
+            bgImage: res.data.Data
+          })
+        }
       })
   },
   onLoad() {
@@ -104,6 +103,6 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    $common.api.share()
+    return $common.api.share()
   }
 })

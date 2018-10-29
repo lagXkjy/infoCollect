@@ -1,6 +1,6 @@
-const host = 'usercj.1-zhao.cn';
-const referer = `https://${host}`;
-const phoneReg = /^1[34578]\d{9}$/; // 正则手机号码
+const host = 'usercj.1-zhao.cn'
+const referer = `https://${host}`
+const phoneReg = /^1[34578]\d{9}$/ // 正则手机号码
 module.exports = {
     phoneReg,
     //获取openId

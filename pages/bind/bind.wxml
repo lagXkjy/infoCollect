@@ -1,5 +1,5 @@
 <!--pages/bind/bind.wxml-->
-<image class='banner' mode='widthFix' src="{{banner}}" />
+<image lazy-load class='banner' mode='widthFix' src="{{banner}}" />
 <view class='title-box border-box'>
     <view class='title font-32 border-box'>
         填写用户信息
@@ -12,7 +12,7 @@
         </view>
         <view class='info-value border-box'>
             <text wx:if='{{info.phone}}'>{{info.phone}}</text>
-            <input else bindinput='inputPhone' class='info-input border-box' maxlength='11' type="number" placeholder="请输入手机号" />
+            <input wx:else bindinput='inputPhone' value='{{info.phone}}' class='info-input border-box' maxlength='11' type="number" placeholder="请输入手机号" /> 
         </view>
     </view>
     <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
@@ -20,8 +20,8 @@
             学生姓名：
         </view>
         <view class='info-value border-box'>
-            <text wx:if='{{info.name}}'>{{info.name}}</text>
-            <input else bindinput='inputName' class='info-input border-box' type="text" placeholder="请输入学生姓名" />
+            <text wx:if='{{userId}}'>{{info.name}}</text>
+            <input wx:else bindinput='inputName' class='info-input border-box' type="text" placeholder="请输入学生姓名" />
         </view>
     </view>
     <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
@@ -29,8 +29,8 @@
             年龄：
         </view>
         <view class='info-value border-box'>
-            <text wx:if='{{info.age}}'>{{info.age}}</text>
-            <input else bindinput='inputAge' class='info-input border-box' type="number" placeholder="请输入年龄" />
+            <text wx:if='{{userId}}'>{{info.age}}</text>
+            <input wx:else bindinput='inputAge' class='info-input border-box' type="number" placeholder="请输入年龄" />
         </view>
     </view>
     <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-start'>
@@ -38,13 +38,13 @@
             地址：
         </view>
         <view class='info-value border-box'>
-            <text wx:if='{{info.address}}'>{{info.address}}</text>
-            <input else bindinput='inputAddress' class='info-input border-box' type="text" placeholder="请输入地址" />
+            <text wx:if='{{userId}}'>{{info.address}}</text>
+            <input wx:else bindinput='inputAddress' value='{{info.address}}' class='info-input border-box' type="text" placeholder="请输入地址" />
         </view>
     </view>
 </view>
 <view class='btn-box padding-lr-30 border-box'>
-    <button wx:if='{{useInfo.phone && useInfo.name && useInfo.age && useInfo.address}}' class='submit submit-end my-btn white-color font-34 font-weight flex justify-center align-center margin-b-30'>信息已提交成功</button>
-    <button else open-type='getUserInfo' bindgetuserinfo='submitUseInfo' class='submit my-btn white-color font-34 font-weight flex justify-center align-center margin-b-30'>提交</button>
+    <button wx:if='{{userId}}' class='submit submit-end my-btn white-color font-34 font-weight flex justify-center align-center margin-b-30'>信息已提交成功</button>
+    <button wx:else open-type='getUserInfo' bindgetuserinfo='submitUseInfo' class='submit my-btn white-color font-34 font-weight flex justify-center align-center margin-b-30'>提交</button>
 </view>
 

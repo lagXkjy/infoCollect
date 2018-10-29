@@ -1,7 +1,8 @@
 const $common = require('../../common/common.js')
 Page({
   data: {},
-  onLoad() {
+  onLoad(options) {
+    options.eId && wx.setStorageSync('eId', options.eId)  //小程序有可能是扫码进入
     $common.loading()
     $common.getOpenId()
       .then(() => {
@@ -13,6 +14,7 @@ Page({
       .then((res) => {
         $common.hide()
         if (res.data.res) {
+          wx.setStorageSync('userId', res.data.UserID)
           wx.redirectTo({
             url: '/pages/bind/bind'
           })
@@ -22,7 +24,7 @@ Page({
               url: '/pages/login/login'
             })
           } else {
-            $common.api.codeModal(res.data.errorType);
+            $common.api.codeModal(res.data.errorType)
           }
         }
       })
@@ -78,6 +80,6 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    return $common.api.share();
+    return $common.api.share()
   }
 })

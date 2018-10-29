@@ -1,12 +1,16 @@
 const $common = require('../../common/common.js')
+const wxParse = require('../../libs/wxParse/wxParse.js')
 Page({
-  data: {
-
-  },
+  data: {},
   getCollection() { //获取条款
     $common.api.request($common.config.GetCollection, { type: 3 })
       .then((res) => {
-
+        if (res.data.res) {
+          let html = res.data.Data
+          setTimeout(() => {
+            wxParse.wxParse('article', 'html', html, this, 5)
+          }, 300)
+        }
       })
   },
   /**
@@ -62,6 +66,6 @@ Page({
    * 用户点击右上角分享
    */
   onShareAppMessage: function () {
-    $common.api.share()
+    return $common.api.share()
   }
 })
