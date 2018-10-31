@@ -76,7 +76,7 @@ Page({
       useInfo.openid = wx.getStorageSync('openId')
       useInfo.headImg = userInfo.avatarUrl
       useInfo.nickname = userInfo.nickName
-      useInfo.eid = +wx.getStorageSync('eId') || 1
+      useInfo.eid = +wx.getStorageSync('eId')
       useInfo.name  = useInfo.name.trim();
       $common.api.request($common.config.PostUserData, useInfo)
         .then((res) => {

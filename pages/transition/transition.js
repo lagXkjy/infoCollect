@@ -2,7 +2,7 @@ const $common = require('../../common/common.js')
 Page({
   data: {},
   onLoad(options) {
-    options.eId && wx.setStorageSync('eId', options.eId)  //小程序有可能是扫码进入
+    wx.setStorageSync('eId', options.eId || 0)  //小程序有可能是扫码进入
     $common.loading()
     $common.getOpenId()
       .then(() => {
