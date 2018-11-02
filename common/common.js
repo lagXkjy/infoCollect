@@ -3,9 +3,9 @@ const config = require('./config.js')
 module.exports = {
     api,
     config,
-    getOpenId(isRegister = true) { //获取openId
-        if (!isRegister || wx.getStorageSync('openId')) return new Promise((resolve, reject) => resolve())
-        else return new Promise((resolve, reject) => wx.login({ success: resolve }))
+    getOpenId(isRegister = false) { //获取openId
+        if(isRegister || !wx.getStorageSync('openId')) {
+            return new Promise((resolve, reject) => wx.login({ success: resolve }))
             .then((res) => new Promise((resolve, reject) => {
                 const code = res.code
                 code && api.request(config.GetSaveEngineerOpenId, { code })
@@ -20,6 +20,7 @@ module.exports = {
                     })
                     .catch((res) => reject(res))
             }))
+        } else return new Promise((resolve, reject) => resolve())
     },
     checkSession() { //查看登录状态是否过期
         return new Promise((resolve, reject) => wx.checkSession({ success: resolve, fail: reject }))

@@ -45,7 +45,7 @@ Page({
   getCollection() { //获取图片等信息
     $common.api.request($common.config.GetCollection, { type: 1 })
       .then((res) => {
-        if(res.data.res) {
+        if (res.data.res) {
           this.setData({
             bgImage: res.data.Data
           })
