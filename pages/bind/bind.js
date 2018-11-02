@@ -16,7 +16,7 @@ Page({
     this.data.useInfo.age = +e.detail.value
   },
   inputAddress(e) { //地址
-    this.data.useInfo.address = +e.detail.value
+    this.data.useInfo.address = e.detail.value
   },
   getInfo() { //获取信息
     const userId = wx.getStorageSync('userId')
