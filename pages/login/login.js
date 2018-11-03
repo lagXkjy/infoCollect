@@ -13,7 +13,8 @@ Page({
           let options = {
             encryptedData: e.detail.encryptedData,
             iv: e.detail.iv,
-            session_key: wx.getStorageSync('session_key')
+            session_key: wx.getStorageSync('session_key'),
+            New_session_key: wx.getStorageSync('New_session_key')
           }
           $common.api.request($common.config.GetUserPhone, options)
             .then((res) => {
@@ -68,7 +69,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-
+    $common.getOpenId(true)
   },
 
   /**
