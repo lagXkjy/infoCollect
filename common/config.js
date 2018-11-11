@@ -15,4 +15,6 @@ module.exports = {
     PostUserData: `${referer}/CollectionAPI/PostUserData`,
     //获取图片条款等信息 type 1 登录页图片 2 提交页图片 3 政策信息
     GetCollection: `${referer}/CollectionAPI/GetCollection`,
+    //获取Stem中心
+    GetStemCoreList: `${referer}/CollectionAPI/GetStemCoreList`,
 }

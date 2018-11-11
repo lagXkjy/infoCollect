@@ -24,7 +24,7 @@
             <input wx:else bindinput='inputName' cursor-spacing='30' class='info-input border-box' type="text" placeholder="请输入学生姓名" />
         </view>
     </view>
-    <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
+   <!-- <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
         <view class='info-key'>
             年龄：
         </view>
@@ -32,8 +32,35 @@
             <text wx:if='{{userId}}'>{{info.age}}</text>
             <input wx:else bindinput='inputAge' cursor-spacing='30' class='info-input border-box' type="number" placeholder="请输入年龄" />
         </view>
+    </view> -->
+    <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
+        <view class='info-key'>
+            年级：
+        </view>
+        <view class='info-value border-box'>
+            <text wx:if='{{userId}}'>{{info.gradeValue}}</text>
+            <picker wx:else mode="selector" range="{{grade}}" value="{{gradeIndex}}" bindchange="gradeChange">{{grade[gradeIndex]}}</picker>
+        </view>
     </view>
-    <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-start'>
+    <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
+        <view class='info-key'>
+            昂立STEM中心：
+        </view>
+        <view class='info-value border-box'>
+            <text wx:if='{{userId}}'>{{info.STEMValue}}</text>
+            <picker wx:else mode="selector" range="{{STEM}}" range-key='CoreName' value="{{STEMIndex}}" bindchange="STEMChange">{{STEM[STEMIndex].CoreName}}</picker>
+        </view>
+    </view>
+    <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
+        <view class='info-key'>
+            邀请码：
+        </view>
+        <view class='info-value border-box'>
+            <text wx:if='{{userId}}'>{{info.inviteValue}}</text>
+            <picker wx:else mode="selector" range="{{inviteCode}}" value="{{inviteCodeIndex}}" bindchange="inviteCodeChange">{{inviteCode[inviteCodeIndex]}}</picker>
+        </view>
+    </view>
+   <!-- <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-start'>
         <view class='info-key'>
             地址：
         </view>
@@ -41,7 +68,7 @@
             <text wx:if='{{userId}}'>{{info.address}}</text>
             <input wx:else bindinput='inputAddress' cursor-spacing='30' value='{{info.address}}' class='info-input border-box' type="text" placeholder="请输入地址" />
         </view>
-    </view>
+    </view> -->
 </view>
 <view class='btn-box padding-lr-30 border-box'>
     <button wx:if='{{userId}}' class='submit submit-end my-btn white-color font-34 font-weight flex justify-center align-center margin-b-30'>信息已提交成功</button>

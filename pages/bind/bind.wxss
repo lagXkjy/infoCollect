@@ -22,10 +22,10 @@ page{
     border-top: 1px solid #e0e0e0;
 }
 .info-key{
-    width: 24%;
+    width: 36%;
 }
 .info-value{
-    width: 76%;
+    width: 64%;
 }
 .info-input{
     width: 100%;

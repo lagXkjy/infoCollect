@@ -54,8 +54,8 @@ Page({
       })
   },
   onLoad() {
-    $common.api.locationAndGetAddress()
-      .then((res) => app.userLocation = res)
+    // $common.api.locationAndGetAddress()
+    //   .then((res) => app.userLocation = res)
   },
 
   /**
