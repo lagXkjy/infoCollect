@@ -6,11 +6,11 @@ Page({
     info: {}, //获取到的信息
     useInfo: {}, //待提交的信息
     grade: ['托班', '小班', '中班', '大班', '1年级', '2年级', '3年级', '4年级', '5年级'], //年级，客户定死的
-    gradeIndex: 0,
+    gradeIndex: -1,
     STEM: [],
-    STEMIndex: 0,
+    STEMIndex: -1,
     inviteCode: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 101, 102, 103, 104, 105], //邀请码,客户定死的
-    inviteCodeIndex: 0,
+    inviteCodeIndex: -1,
   },
   inputPhone(e) { //手机号
     this.data.useInfo.phone = e.detail.value
@@ -37,8 +37,9 @@ Page({
     return $common.api.request($common.config.GetStemCoreList, {})
       .then((res) => {
         if (res.data.res) {
+          let STEM = this.data.STEM
           this.setData({
-            STEM: res.data.Data
+            STEM: STEM.concat(res.data.Data)
           })
         } else {
           $common.api.codeModal()
@@ -113,6 +114,10 @@ Page({
     let useInfo = this.data.useInfo
     if (!useInfo.phone || !$common.config.phoneReg.test(useInfo.phone)) return $common.api.showModal('请填写正确的手机号码！')
     if (!useInfo.name || useInfo.name.trim().length <= 0) return $common.api.showModal('请填写姓名！')
+    let self = this.data
+    if(self.gradeIndex === -1) return $common.api.showModal('请选择年级！')
+    if(self.STEMIndex === -1) return $common.api.showModal('请选择中心！')
+    if(self.inviteCodeIndex === -1) return $common.api.showModal('请选择邀请码！')
     // if (!useInfo.age || useInfo.age <= 0) return $common.api.showModal('请填写年龄！')
     // if (!useInfo.address || useInfo.address.trim().length <= 0) return $common.api.showModal('请填写地址！')
     $common.api.debounce(() => {
@@ -121,7 +126,6 @@ Page({
       useInfo.nickname = userInfo.nickName
       useInfo.eid = +wx.getStorageSync('eId')
       useInfo.name = useInfo.name.trim()
-      let self = this.data
       useInfo.grade = '' + self.grade[self.gradeIndex]
       useInfo.stemcoreid = self.STEM[self.STEMIndex].sId
       useInfo.Invitationcode = '' + self.inviteCode[self.inviteCodeIndex]
