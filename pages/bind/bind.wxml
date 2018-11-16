@@ -2,11 +2,11 @@
 <image lazy-load class='banner' mode='widthFix' src="{{banner}}" />
 <view class='title-box border-box'>
     <view class='title font-32 border-box'>
-        填写用户信息
+        信息登录
     </view>
 </view>
 <view class='info border-box white-bg'>
-    <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
+    <!-- <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
         <view class='info-key'>
             手机号：
         </view>
@@ -14,7 +14,7 @@
             <text wx:if='{{info.phone}}'>{{info.phone}}</text>
             <input wx:else bindinput='inputPhone' cursor-spacing='30' value='{{info.phone}}' class='info-input border-box' maxlength='11' type="number" placeholder="请输入手机号" placeholder-class='gray' /> 
         </view>
-    </view>
+    </view> -->
     <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
         <view class='info-key'>
             学生姓名：
@@ -89,7 +89,7 @@
     </view> -->
 </view>
 <view class='btn-box padding-lr-30 border-box'>
-    <button wx:if='{{userId}}' class='submit submit-end my-btn white-color font-34 font-weight flex justify-center align-center margin-b-30'>信息已提交成功</button>
+    <button wx:if='{{userId}}' class='submit submit-end my-btn white-color font-34 font-weight flex justify-center align-center margin-b-30'>预约成功</button>
     <button wx:else open-type='getUserInfo' bindgetuserinfo='submitUseInfo' class='submit my-btn white-color font-34 font-weight flex justify-center align-center margin-b-30'>提交</button>
 </view>
 

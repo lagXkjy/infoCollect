@@ -8,7 +8,6 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#000000",
-    "navigationBarTitleText": "用户采集",
     "navigationBarTextStyle": "white"
   }
 }

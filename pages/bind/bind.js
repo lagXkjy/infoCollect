@@ -12,9 +12,9 @@ Page({
     inviteCode: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 101, 102, 103, 104, 105], //邀请码,客户定死的
     inviteCodeIndex: -1,
   },
-  inputPhone(e) { //手机号
-    this.data.useInfo.phone = e.detail.value
-  },
+  // inputPhone(e) { //手机号
+  //   this.data.useInfo.phone = e.detail.value
+  // },
   inputName(e) { //姓名
     this.data.useInfo.name = e.detail.value
   },
@@ -112,7 +112,7 @@ Page({
     let userInfo = e.detail.userInfo
     if (!userInfo) return
     let useInfo = this.data.useInfo
-    if (!useInfo.phone || !$common.config.phoneReg.test(useInfo.phone)) return $common.api.showModal('请填写正确的手机号码！')
+    // if (!useInfo.phone || !$common.config.phoneReg.test(useInfo.phone)) return $common.api.showModal('请填写正确的手机号码！')
     if (!useInfo.name || useInfo.name.trim().length <= 0) return $common.api.showModal('请填写姓名！')
     let self = this.data
     if(self.gradeIndex === -1) return $common.api.showModal('请选择年级！')
