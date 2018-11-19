@@ -22,7 +22,7 @@ module.exports = {
                                 let session_key = wx.getStorageSync('session_key')
                                 let New_session_key = wx.getStorageSync('New_session_key')
                                 let data_session_key = data.session_key
-                                wx.setStorageSync('session_key', session_key ? New_session_key === data_session_key ? session_key : New_session_key : data_session_key)
+                                wx.setStorageSync('session_key', session_key ? New_session_key === data_session_key ? session_key : New_session_key || session_key : data_session_key)
                                 wx.setStorageSync('New_session_key', data_session_key)
                                 resolve(res)
                             } else reject(res)
