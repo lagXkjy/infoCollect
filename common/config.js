@@ -17,4 +17,6 @@ module.exports = {
     GetCollection: `${referer}/CollectionAPI/GetCollection`,
     //获取Stem中心
     GetStemCoreList: `${referer}/CollectionAPI/GetStemCoreList`,
+    //获取城市
+    GetCityList: `${referer}/CollectionAPI/GetCityList`,
 }

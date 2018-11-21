@@ -7,8 +7,11 @@ Page({
     useInfo: {}, //待提交的信息
     grade: ['托班', '小班', '中班', '大班', '1年级', '2年级', '3年级', '4年级', '5年级'], //年级，客户定死的
     gradeIndex: -1,
+    city: [], //城市
+    cityIndex: -1,
     STEM: [],
     STEMIndex: -1,
+    STEMCache: {}, //昂立STEM中心缓存
     inviteCode: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 101, 102, 103, 104, 105], //邀请码,客户定死的
     inviteCodeIndex: -1,
   },
@@ -24,8 +27,17 @@ Page({
   gradeChange(e) { //年级
     this.setData({ gradeIndex: +e.detail.value })
   },
+  cityChange(e) { //城市
+    let currentIndex = this.data.cityIndex
+    let selectIndex = +e.detail.value
+    this.setData({
+      cityIndex: +e.detail.value,
+      STEMIndex: currentIndex === selectIndex ? this.data.STEMIndex : -1
+    })
+    selectIndex !== -1 && this.getSTEM()
+  },
   STEMChange(e) { // STEM
-    this.setData({ STEMIndex: +e.detail.value })
+    this.setData({ STEMIndex: this.data.cityIndex === -1 ? -1 : +e.detail.value })
   },
   inviteCodeChange(e) { //邀请码
     this.setData({ inviteCodeIndex: +e.detail.value })
@@ -33,25 +45,90 @@ Page({
   // inputAddress(e) { //地址
   //   this.data.useInfo.address = e.detail.value
   // },
-  getSTEM() { //获取STEM中心
-    return $common.api.request($common.config.GetStemCoreList, {})
-      .then((res) => {
+  getCity() { //获取城市
+    return $common.api.request($common.config.GetCityList)
+      .then(res => {
         if (res.data.res) {
-          let STEM = this.data.STEM
           this.setData({
-            STEM: STEM.concat(res.data.Data)
+            city: res.data.Data
           })
-        } else {
-          $common.api.codeModal()
         }
       })
-      .catch(() => $common.api.codeModal())
+  },
+  getSTEM() { //根据城市获取STEM中心
+    let data = this.data
+    let STEMCache = data.STEMCache
+    let city = data.city
+    let cityIndex = data.cityIndex
+    let cityId = city[cityIndex].cityId
+    if (STEMCache[cityId]) { //有缓存，走缓存
+      return new Promise((resolve, reject) => {
+        let STEM = STEMCache[cityId]
+        this.setData({ STEM })
+        resolve()
+      })
+    } else {
+      return $common.api.request($common.config.GetStemCoreList, { cityId })
+        .then(res => {
+          if (res.data.res) {
+            let STEM = res.data.Data
+            this.data.STEMCache[cityId] = STEM //做缓存
+            this.setData({ STEM })
+          } else {
+            $common.api.codeModal()
+          }
+        })
+        .catch(() => $common.api.codeModal())
+    }
+  },
+  getCityAndSTEM() {  //存在用户信息，获取城市信息 
+    $common.api.request($common.config.GetUserInfo, { UserID: wx.getStorageSync('userId') })
+      .then(res => {
+        if (res.data.res) {
+          let data = res.data.UserInfo
+          let { sId, cityId } = data
+          this.setData({
+            info: {
+              phone: data.UserTel,
+              name: data.UserName,
+              age: data.UserAge,
+              address: data.UserAddress,
+              gradeValue: data.Grade,
+              inviteValue: data.InvitationCode
+            }
+          })
+          this.getCity()
+            .then(() => {
+              let city = this.data.city
+              let cityValue = ''
+              for (let i = 0, len = city.length; i < len; i++) {
+                if (city[i].cityId === cityId) {
+                  this.setData({
+                    'info.cityValue': city[i].CityName,
+                    cityIndex: i
+                  })
+                  return this.getSTEM()
+                }
+              }
+            })
+            .then(() => {
+              let STEM = this.data.STEM
+              for (let i = 0, len = STEM.length; i < len; i++) {
+                if (STEM[i].sId === sId) return this.setData({ 'info.STEMValue': STEM[i].CoreName })
+              }
+            })
+        } else {
+          $common.api.codeModal(res.data.errorType)
+        }
+      })
+      .catch((res) => $common.api.codeModal())
+
   },
   getInfo() { //获取信息
     const userId = wx.getStorageSync('userId')
     this.setData({ userId })
     if (userId <= 0) { //当前用户不存在
-      this.getSTEM()
+      this.getCity()
       let phone = wx.getStorageSync('phone') || ''
       let address = app.userLocation ? app.userLocation.result.address : ''
       this.setData({
@@ -63,39 +140,7 @@ Page({
       this.data.useInfo.phone = phone
       this.data.useInfo.address = address
     } else {
-      this.getSTEM()
-        .then(() => {
-          $common.api.request($common.config.GetUserInfo, { UserID: wx.getStorageSync('userId') })
-            .then((res) => {
-              if (res.data.res) {
-                let data = res.data.UserInfo
-                let STEM = this.data.STEM
-                let STEMValue = ''
-                for (let i = 0, len = STEM.length; i < len; i++) {
-                  if (data.sId === STEM[i].sId) {
-                    STEMValue = STEM[i].CoreName
-                    break
-                  }
-                }
-                this.setData({
-                  info: {
-                    phone: data.UserTel,
-                    name: data.UserName,
-                    age: data.UserAge,
-                    address: data.UserAddress,
-                    gradeValue: data.Grade,
-                    STEMValue,
-                    inviteValue: data.InvitationCode
-                  }
-                })
-              } else {
-                $common.api.codeModal(res.data.errorType)
-              }
-            })
-            .catch((res) => {
-              $common.api.codeModal()
-            })
-        })
+      this.getCityAndSTEM()
     }
   },
   getCollection() { //获取图片等信息
@@ -115,9 +160,12 @@ Page({
     // if (!useInfo.phone || !$common.config.phoneReg.test(useInfo.phone)) return $common.api.showModal('请填写正确的手机号码！')
     if (!useInfo.name || useInfo.name.trim().length <= 0) return $common.api.showModal('请填写姓名！')
     let self = this.data
-    if(self.gradeIndex === -1) return $common.api.showModal('请选择年级！')
-    if(self.STEMIndex === -1) return $common.api.showModal('请选择中心！')
-    if(self.inviteCodeIndex === -1) return $common.api.showModal('请选择邀请码！')
+    if (self.gradeIndex === -1) return $common.api.showModal('请选择年级！')
+    if (self.cityIndex === -1) return $common.api.showModal('请选择城市！')
+    if (self.STEMIndex === -1) return $common.api.showModal('请选择STEM中心！')
+    if (self.inviteCodeIndex === -1) return $common.api.showModal('请选择邀请码！')
+    let cityId = self.city[self.cityIndex].cityId
+    let sId = self.STEM[self.STEMIndex].sId
     // if (!useInfo.age || useInfo.age <= 0) return $common.api.showModal('请填写年龄！')
     // if (!useInfo.address || useInfo.address.trim().length <= 0) return $common.api.showModal('请填写地址！')
     $common.api.debounce(() => {
@@ -127,7 +175,8 @@ Page({
       useInfo.eid = +wx.getStorageSync('eId')
       useInfo.name = useInfo.name.trim()
       useInfo.grade = '' + self.grade[self.gradeIndex]
-      useInfo.stemcoreid = self.STEM[self.STEMIndex].sId
+      useInfo.cityId = cityId
+      useInfo.stemcoreid = sId
       useInfo.Invitationcode = '' + self.inviteCode[self.inviteCodeIndex]
       $common.api.request($common.config.PostUserData, useInfo)
         .then((res) => {

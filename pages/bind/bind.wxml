@@ -50,6 +50,21 @@
     </view>
     <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
         <view class='info-key'>
+            城市：
+        </view>
+        <view class='info-value border-box'>
+            <text wx:if='{{userId}}'>{{info.cityValue}}</text>
+            <picker wx:else mode="selector" range="{{city}}" range-key='CityName' value="{{cityIndex}}" bindchange="cityChange">
+                <view class='flex justify-between align-center'>
+                    <text wx:if='{{cityIndex === -1}}' class='gray'>请选择城市</text>
+                    <text wx:else>{{city[cityIndex].CityName}}</text>
+                    <image mode='widthFix' class='info-right-image' src="/images/right.png" />
+                </view>
+            </picker>
+        </view>
+    </view>
+    <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
+        <view class='info-key'>
             昂立STEM中心：
         </view>
         <view class='info-value border-box'>
