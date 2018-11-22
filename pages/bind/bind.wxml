@@ -48,7 +48,7 @@
             </picker>
         </view>
     </view>
-    <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
+    <view wx:if='{{type !== "city"}}' class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
         <view class='info-key'>
             城市：
         </view>

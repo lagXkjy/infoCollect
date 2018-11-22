@@ -1,7 +1,11 @@
 /* pages/login/login.wxss */
-.bg-image{
+.bg-image-box{
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
+}
+.bg-image{
+    width: 100%;
 }
 .content{
     position: absolute;

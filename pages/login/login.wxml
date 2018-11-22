@@ -1,5 +1,7 @@
 <!--pages/login/login.wxml-->
-<image class='bg-image block' src="{{bgImage}}" loazy-load='{{true}}' />
+<view class='bg-image-box'>
+    <image class='bg-image block' mode='widthFix' src="{{bgImage}}" loazy-load='{{true}}' />
+</view>
 <view class='content flex align-center justify-end flex-direction'>
     <button open-type='getPhoneNumber' bindgetphonenumber='getPhoneMumber' class='login my-btn border-box white-color font-32 flex justify-center align-center margin-b-30'>
         <image class='wechat block' mode='widthFix' src="/images/wechat.png" />

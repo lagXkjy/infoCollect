@@ -3,6 +3,8 @@ Page({
   data: {},
   onLoad(options) {
     wx.setStorageSync('eId', options.eId || 0)  //小程序有可能是扫码进入
+    // type  string = user正常 | city 不用选择城市，STEM中心由eId获取
+    wx.setStorageSync('type', options.type || 'user')
     $common.loading()
     $common.getOpenId()
       .then(() => {

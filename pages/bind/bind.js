@@ -2,6 +2,7 @@ const $common = require('../../common/common.js')
 const app = getApp()
 Page({
   data: {
+    type: wx.getStorageSync('type'),
     banner: '',
     info: {}, //获取到的信息
     useInfo: {}, //待提交的信息
@@ -55,7 +56,18 @@ Page({
         }
       })
   },
-  getSTEM() { //根据城市获取STEM中心
+  getSTEM(isCity) { //根据城市获取STEM中心
+    if (isCity) { //type为city，由eId代替cityId
+      return $common.api.request($common.config.GetStemCoreList, { cityId: wx.getStorageSync('eId') })
+        .then(res => {
+          if (res.data.res) {
+            this.setData({ STEM: res.data.Data })
+          } else {
+            $common.api.codeModal()
+          }
+        })
+        .catch(() => $common.api.codeModal())
+    }
     let data = this.data
     let STEMCache = data.STEMCache
     let city = data.city
@@ -128,7 +140,7 @@ Page({
     const userId = wx.getStorageSync('userId')
     this.setData({ userId })
     if (userId <= 0) { //当前用户不存在
-      this.getCity()
+      this.data.type !== 'city' ? this.getCity() : this.getSTEM(true) //type为city，由eId代替cityId
       let phone = wx.getStorageSync('phone') || ''
       let address = app.userLocation ? app.userLocation.result.address : ''
       this.setData({
@@ -145,13 +157,7 @@ Page({
   },
   getCollection() { //获取图片等信息
     $common.api.request($common.config.GetCollection, { type: 2 })
-      .then((res) => {
-        if (res.data.res) {
-          this.setData({
-            banner: res.data.Data
-          })
-        }
-      })
+      .then((res) => res.data.res && this.setData({ banner: res.data.Data }))
   },
   submitUseInfo(e) { //提交信息
     let userInfo = e.detail.userInfo
@@ -160,11 +166,13 @@ Page({
     // if (!useInfo.phone || !$common.config.phoneReg.test(useInfo.phone)) return $common.api.showModal('请填写正确的手机号码！')
     if (!useInfo.name || useInfo.name.trim().length <= 0) return $common.api.showModal('请填写姓名！')
     let self = this.data
+    let { type } = this.data
     if (self.gradeIndex === -1) return $common.api.showModal('请选择年级！')
-    if (self.cityIndex === -1) return $common.api.showModal('请选择城市！')
+    if (self.cityIndex === -1 && type === 'user') return $common.api.showModal('请选择城市！')
     if (self.STEMIndex === -1) return $common.api.showModal('请选择STEM中心！')
     if (self.inviteCodeIndex === -1) return $common.api.showModal('请选择邀请码！')
     let cityId = self.city[self.cityIndex].cityId
+    // if(type === 'city') cityId = self.STEM[self.STEMIndex].
     let sId = self.STEM[self.STEMIndex].sId
     // if (!useInfo.age || useInfo.age <= 0) return $common.api.showModal('请填写年龄！')
     // if (!useInfo.address || useInfo.address.trim().length <= 0) return $common.api.showModal('请填写地址！')
@@ -195,7 +203,6 @@ Page({
   init() {
     this.getCollection()
     this.getInfo()
-
   },
   /**
    * 生命周期函数--监听页面加载
