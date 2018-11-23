@@ -17,6 +17,7 @@ Page({
         $common.hide()
         if (res.data.res) {
           wx.setStorageSync('userId', res.data.UserID)
+          wx.setStorageSync('type', 'user') //已经预约成功，防止再次扫type为city的码进来，这里重写
           wx.redirectTo({
             url: '/pages/bind/bind'
           })

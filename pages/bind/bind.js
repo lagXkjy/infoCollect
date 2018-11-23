@@ -2,7 +2,7 @@ const $common = require('../../common/common.js')
 const app = getApp()
 Page({
   data: {
-    type: wx.getStorageSync('type'),
+    type: 'city',
     banner: '',
     info: {}, //获取到的信息
     useInfo: {}, //待提交的信息
@@ -38,7 +38,7 @@ Page({
     selectIndex !== -1 && this.getSTEM()
   },
   STEMChange(e) { // STEM
-    this.setData({ STEMIndex: this.data.cityIndex === -1 ? -1 : +e.detail.value })
+    this.setData({ STEMIndex: this.data.type === 'city' ? +e.detail.value : this.data.cityIndex === -1 ? -1 : +e.detail.value })
   },
   inviteCodeChange(e) { //邀请码
     this.setData({ inviteCodeIndex: +e.detail.value })
@@ -58,7 +58,7 @@ Page({
   },
   getSTEM(isCity) { //根据城市获取STEM中心
     if (isCity) { //type为city，由eId代替cityId
-      return $common.api.request($common.config.GetStemCoreList, { cityId: wx.getStorageSync('eId') })
+      return $common.api.request($common.config.GetStemCoreList, { id: wx.getStorageSync('eId'), Type: this.data.type })
         .then(res => {
           if (res.data.res) {
             this.setData({ STEM: res.data.Data })
@@ -80,7 +80,7 @@ Page({
         resolve()
       })
     } else {
-      return $common.api.request($common.config.GetStemCoreList, { cityId })
+      return $common.api.request($common.config.GetStemCoreList, { id: cityId, Type: this.data.type })
         .then(res => {
           if (res.data.res) {
             let STEM = res.data.Data
@@ -171,8 +171,7 @@ Page({
     if (self.cityIndex === -1 && type === 'user') return $common.api.showModal('请选择城市！')
     if (self.STEMIndex === -1) return $common.api.showModal('请选择STEM中心！')
     if (self.inviteCodeIndex === -1) return $common.api.showModal('请选择邀请码！')
-    let cityId = self.city[self.cityIndex].cityId
-    // if(type === 'city') cityId = self.STEM[self.STEMIndex].
+    let cityId = type === 'city' ? self.STEM[self.STEMIndex].cityId : self.city[self.cityIndex].cityId
     let sId = self.STEM[self.STEMIndex].sId
     // if (!useInfo.age || useInfo.age <= 0) return $common.api.showModal('请填写年龄！')
     // if (!useInfo.address || useInfo.address.trim().length <= 0) return $common.api.showModal('请填写地址！')
@@ -190,6 +189,10 @@ Page({
         .then((res) => {
           if (res.data.res) {
             wx.setStorageSync('userId', res.data.UserID)
+            wx.setStorageSync('type', 'user') //添加成功，页面数据恢复到user状态
+            this.setData({
+              type: 'user'
+            })
             this.getInfo()
           } else {
             $common.api.showModal('提交失败！')
@@ -215,6 +218,9 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
+    this.setData({
+      type: wx.getStorageSync('type')
+    })
     this.init()
   },
 
