@@ -78,7 +78,7 @@
             </picker>
         </view>
     </view>
-    <view class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
+    <view wx:if='{{info.inviteValue !== -1}}' class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-center'>
         <view class='info-key'>
             邀请码：
         </view>
@@ -102,6 +102,15 @@
             <input wx:else bindinput='inputAddress' cursor-spacing='30' value='{{info.address}}' class='info-input border-box' type="text" placeholder="请输入地址"  placeholder-class='gray'/>
         </view>
     </view> -->
+    <view :hidden='{{userId && !info.remarksValue}}' class='info-list border-box padding-lr-30 padding-tb-40 font-28 flex align-start'>
+        <view class='info-key'>
+            备注：
+        </view>
+        <view class='info-value border-box'>
+            <text wx:if='{{userId}}'>{{info.remarksValue}}</text>
+            <input wx:else bindinput='inputRenarks' cursor-spacing='30' class='info-input border-box' type="text" placeholder="请填写备注（选填）"  placeholder-class='gray'/>
+        </view>
+    </view> 
 </view>
 <view class='btn-box padding-lr-30 border-box'>
     <button wx:if='{{userId}}' class='submit submit-end my-btn white-color font-34 font-weight flex justify-center align-center margin-b-30'>预约成功</button>

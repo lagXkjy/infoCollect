@@ -4,7 +4,7 @@ Page({
   data: {
     type: 'city',
     banner: '',
-    info: {}, //获取到的信息
+    info: { inviteValue: -1 }, //获取到的信息
     useInfo: {}, //待提交的信息
     grade: ['托班', '小班', '中班', '大班', '1年级', '2年级', '3年级', '4年级', '5年级'], //年级，客户定死的
     gradeIndex: -1,
@@ -15,6 +15,7 @@ Page({
     STEMCache: {}, //昂立STEM中心缓存
     inviteCode: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 101, 102, 103, 104, 105], //邀请码,客户定死的
     inviteCodeIndex: -1,
+    remarks: '', //备注
   },
   // inputPhone(e) { //手机号
   //   this.data.useInfo.phone = e.detail.value
@@ -46,6 +47,9 @@ Page({
   // inputAddress(e) { //地址
   //   this.data.useInfo.address = e.detail.value
   // },
+  inputRenarks(e) { //备注
+    this.data.remarks = e.detail.value
+  },
   getCity() { //获取城市
     return $common.api.request($common.config.GetCityList)
       .then(res => {
@@ -106,7 +110,8 @@ Page({
               age: data.UserAge,
               address: data.UserAddress,
               gradeValue: data.Grade,
-              inviteValue: data.InvitationCode
+              inviteValue: +data.InvitationCode,
+              remarksValue: data.Remarks
             }
           })
           this.getCity()
@@ -134,13 +139,19 @@ Page({
         }
       })
       .catch((res) => $common.api.codeModal())
-
+  },
+  getIsShowCode() { //获取  未注册用户  是否显示邀请码
+    $common.api.request($common.config.GetIsShowCode, { qrId: wx.getStorageSync('eId') })
+      .then(res => { //IsShowCode: false 该用户不必选择邀请码， 提交和回显的时候都为 -1
+        if (res.data.res) this.setData({ 'info.inviteValue': res.data.IsShowCode ? 0 : -1 })
+      })
+    return false
   },
   getInfo() { //获取信息
     const userId = wx.getStorageSync('userId')
     this.setData({ userId })
     if (userId <= 0) { //当前用户不存在
-      this.data.type !== 'city' ? this.getCity() : this.getSTEM(true) //type为city，由eId代替cityId
+      this.data.type !== 'city' ? this.getCity() : this.getIsShowCode() || this.getSTEM(true) //type为city，由eId代替cityId
       let phone = wx.getStorageSync('phone') || ''
       let address = app.userLocation ? app.userLocation.result.address : ''
       this.setData({
@@ -170,9 +181,10 @@ Page({
     if (self.gradeIndex === -1) return $common.api.showModal('请选择年级！')
     if (self.cityIndex === -1 && type === 'user') return $common.api.showModal('请选择城市！')
     if (self.STEMIndex === -1) return $common.api.showModal('请选择STEM中心！')
-    if (self.inviteCodeIndex === -1) return $common.api.showModal('请选择邀请码！')
+    if (self.info.inviteValue !== -1 && self.inviteCodeIndex === -1) return $common.api.showModal('请选择邀请码！')
     let cityId = type === 'city' ? self.STEM[self.STEMIndex].cityId : self.city[self.cityIndex].cityId
     let sId = self.STEM[self.STEMIndex].sId
+    let Invitationcode = self.info.inviteValue === -1 ? -1 : '' + self.inviteCode[self.inviteCodeIndex]
     // if (!useInfo.age || useInfo.age <= 0) return $common.api.showModal('请填写年龄！')
     // if (!useInfo.address || useInfo.address.trim().length <= 0) return $common.api.showModal('请填写地址！')
     $common.api.debounce(() => {
@@ -184,7 +196,8 @@ Page({
       useInfo.grade = '' + self.grade[self.gradeIndex]
       useInfo.cityId = cityId
       useInfo.stemcoreid = sId
-      useInfo.Invitationcode = '' + self.inviteCode[self.inviteCodeIndex]
+      useInfo.Invitationcode = Invitationcode
+      useInfo.Remarks = self.remarks
       $common.api.request($common.config.PostUserData, useInfo)
         .then((res) => {
           if (res.data.res) {

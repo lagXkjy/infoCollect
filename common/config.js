@@ -19,4 +19,6 @@ module.exports = {
     GetStemCoreList: `${referer}/CollectionAPI/GetStemCoreList`,
     //获取城市
     GetCityList: `${referer}/CollectionAPI/GetCityList`,
+    //获取  未注册用户  是否显示邀请码
+    GetIsShowCode: `${referer}/CollectionAPI/GetIsShowCode`,
 }
