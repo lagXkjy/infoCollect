@@ -6,13 +6,13 @@ page{
     width: 100%;
 }
 .title-box{
-    padding: 36rpx 50rpx;
+    padding: 36rpx 40rpx;
 }
 .title{
     color: #ea5420;
     border-left: 6rpx solid #ea5420;
     padding-left: 22rpx;
-    line-height: 34rpx;
+    line-height: 32rpx;
 }
 .info{
     border-bottom: 1px solid #e0e0e0;

@@ -2,7 +2,7 @@
 <image lazy-load class='banner' mode='widthFix' src="{{banner}}" />
 <view class='title-box border-box'>
     <view class='title font-32 border-box'>
-        信息登录
+        科学实验·模型构建·趣味数学·机器人编程
     </view>
 </view>
 <view class='info border-box white-bg'>
