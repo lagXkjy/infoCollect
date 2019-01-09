@@ -40,7 +40,7 @@ module.exports = {
         clearTimeout(this.timerOut)
         this.timerOut = setTimeout(callback, timeOut)
     },
-    share(title = '定位小程序', path = '/pages/transition/transition', imageUrl = null) { //分享
+    share(title = '课程预约小助手', path = '/pages/transition/transition', imageUrl = null) { //分享
         return { title, path, imageUrl }
     },
     showModal(content = '你觉得缺点什么？', showCancel = false, confirmText = '确定', title = '提示', cancelText = '取消') {
